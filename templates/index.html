@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Medical Store Inventory System</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="header">
+            <h1>💊 Medical Store Inventory System</h1>
+
+            <a href="/add" class="add-btn">
+                + Add Medicine
+            </a>
+        </div>
+
+        <div class="stats">
+
+            <div class="card">
+                <h2>{{ total_medicines }}</h2>
+                <p>Total Medicines</p>
+            </div>
+
+            <div class="card">
+                <h2>{{ low_stock_count }}</h2>
+                <p>Low Stock Items</p>
+            </div>
+
+            <div class="card">
+                <h2>{{ expired_count }}</h2>
+                <p>Expired Medicines</p>
+            </div>
+
+        </div>
+
+        <input type="text" id="searchInput" placeholder="🔍 Search Medicine..." style="
+                width:300px;
+                padding:12px;
+                margin-bottom:20px;
+                border:1px solid #ddd;
+                border-radius:8px;
+            " onkeyup="searchMedicine()">
+
+        <table id="medicineTable">
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Medicine Name</th>
+                    <th>Quantity</th>
+                    <th>Price (₹)</th>
+                    <th>Expiry Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for medicine in medicines %}
+
+                <tr>
+
+                    <td>{{ medicine.id }}</td>
+
+                    <td>{{ medicine.name }}</td>
+
+                    <td>{{ medicine.quantity }}</td>
+
+                    <td>{{ medicine.price }}</td>
+
+                    <td>{{ medicine.expiry }}</td>
+
+                    <td>
+
+                        {% if medicine.expired %}
+
+                        <span style="
+                            background:#dc3545;
+                            color:white;
+                            padding:6px 10px;
+                            border-radius:20px;
+                            font-size:12px;
+                            font-weight:bold;
+                        ">
+                            Expired
+                        </span>
+
+                        {% elif medicine.low_stock %}
+
+                        <span style="
+                            background:#ffc107;
+                            color:black;
+                            padding:6px 10px;
+                            border-radius:20px;
+                            font-size:12px;
+                            font-weight:bold;
+                        ">
+                            Low Stock
+                        </span>
+
+                        {% else %}
+
+                        <span style="
+                            background:#28a745;
+                            color:white;
+                            padding:6px 10px;
+                            border-radius:20px;
+                            font-size:12px;
+                            font-weight:bold;
+                        ">
+                            In Stock
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        <a href="/edit/{{ medicine.id }}" class="edit-btn">
+                            Edit
+                        </a>
+
+                        <a href="/delete/{{ medicine.id }}" class="delete-btn"
+                            onclick="return confirm('Delete this medicine?')">
+                            Delete
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <script>
+
+        function searchMedicine() {
+
+            let input =
+                document.getElementById("searchInput").value.toLowerCase();
+
+            let table =
+                document.getElementById("medicineTable");
+
+            let tr =
+                table.getElementsByTagName("tr");
+
+            for (let i = 1; i < tr.length; i++) {
+
+                let td =
+                    tr[i].getElementsByTagName("td")[1];
+
+                if (td) {
+
+                    let txt =
+                        td.textContent || td.innerText;
+
+                    if (
+                        txt.toLowerCase().indexOf(input) > -1
+                    ) {
+                        tr[i].style.display = "";
+                    }
+                    else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>
